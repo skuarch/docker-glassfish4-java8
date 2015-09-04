@@ -1,0 +1,28 @@
+FROM ubuntu:14.04
+
+MAINTAINER skuarch <skuarch@yahoo.com.mx>
+
+ENV DEBIAN_FRONTEND noninteractive
+
+ADD ["./jdk1.8.0_51/","/usr/lib/jvm/jdk1.8.0_51/"]
+ADD ["./glassfish4/","/opt/glassfish4"]
+
+RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections && \
+chmod 777 -R /usr/lib/jvm/ && \
+chmod 777 -R /usr/lib/jvm/jdk1.8.0_51/ && \
+chmod 777 -R /opt/glassfish4/ && \
+update-alternatives --install "/usr/bin/java" "java" "/usr/lib/jvm/jdk1.8.0_51/bin/java" 1 && \
+update-alternatives --install "/usr/bin/javac" "javac" "/usr/lib/jvm/jdk1.8.0_51/bin/javac" 1 && \
+update-alternatives --install "/usr/bin/javah" "javah" "/usr/lib/jvm/jdk1.8.0_51/bin/javah" 1 
+
+VOLUME ["/opt/glassfish4/","/opt/glassfish4/"]
+WORKDIR /opt/glassfish4/
+
+EXPOSE 8080
+EXPOSE 4848
+
+CMD ["/opt/glassfish4/glassfish/bin/./startserv"]
+
+
+#get jdk
+#curl -L -O -H "Cookie: oraclelicense=accept-securebackup-cookie" -k "https://edelivery.oracle.com/otn-pub/java/jdk/8u60-b27/jdk-8u60-linux-x64.tar.gz"
